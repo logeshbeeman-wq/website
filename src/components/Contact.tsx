@@ -5,14 +5,14 @@ export const Contact = () => {
   const { elementRef, isVisible } = useScrollAnimation(0.1);
 
   return (
-    <section id="contact" className="pt-10 pb-10 bg-white dark:bg-gray-800 transition-colors duration-300">
+    <section id="contact" className="py-20 bg-white dark:bg-gray-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           ref={elementRef}
           className={`text-center mb-16 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Get In <span className="bg-gradient-to-r from-green-600 to-purple-600 dark:from-green-400 dark:to-purple-400 bg-clip-text text-transparent">Touch</span>
+            Get In <span className="gradient-text">Touch</span>
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Ready to start your next project? Let's talk about how we can help
@@ -22,7 +22,7 @@ export const Contact = () => {
         <div className="grid lg:grid-cols-2 gap-12">
           <div className="space-y-8">
             <div className="flex items-start space-x-4 group">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Mail className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -33,7 +33,7 @@ export const Contact = () => {
             </div>
 
             <div className="flex items-start space-x-4 group">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Phone className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -44,7 +44,7 @@ export const Contact = () => {
             </div>
 
             <div className="flex items-start space-x-4 group">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <MapPin className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -63,7 +63,7 @@ export const Contact = () => {
               <input
                 type="text"
                 id="name"
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-orange-500 dark:focus:ring-amber-400 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                 placeholder="Your name"
               />
             </div>
@@ -75,7 +75,7 @@ export const Contact = () => {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-orange-500 dark:focus:ring-amber-400 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white"
                 placeholder="your@email.com"
               />
             </div>
@@ -87,14 +87,14 @@ export const Contact = () => {
               <textarea
                 id="message"
                 rows={4}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-400 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white resize-none"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-orange-500 dark:focus:ring-amber-400 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white resize-none"
                 placeholder="Tell us about your project"
               ></textarea>
             </div>
 
             <button
               type="submit"
-              className="w-full px-8 py-4 bg-gradient-to-r from-green-600 to-purple-600 hover:from-green-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl hover:shadow-orange-500/30"
             >
               Send Message
             </button>

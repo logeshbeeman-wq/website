@@ -1,54 +1,53 @@
-import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
-export default function ScrollToTop() {
+const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
-  const navigate = useNavigate();
+  const isInitialMount = useRef(true);
+  const lastPath = useRef(pathname + hash);
 
+  // Handle hash-based scrolling with custom offset
   useEffect(() => {
-    // If there's a hash and we're not on the home page, navigate to home first
-    if (hash && pathname !== '/') {
-      navigate(`/${hash}`, { replace: true });
-      return;
-    }
+    if (!hash) return;
 
     const scrollToElement = () => {
-      if (hash) {
-        const id = hash.substring(1);
-        const element = document.getElementById(id);
-        if (element) {
-          const headerOffset = 80; // Height of your navbar
-          const elementPosition = element.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          
-          // Check if we're already at the target position (within 5px)
-          const currentPosition = window.scrollY;
-          if (Math.abs(currentPosition - offsetPosition) < 5) {
-            return; // Already at the target position, do nothing
-          }
-          
-          // Only scroll if not already at the target position
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
-          
-          // Update URL with hash after scroll
-          window.history.replaceState(null, '', `#${id}`);
-        }
-      } else if (pathname === '/' && window.scrollY > 0) {
-        // Only scroll to top on home page if not already at top
+      const id = hash.substring(1);
+      const element = document.getElementById(id);
+      
+      if (element) {
+        // Check if mobile view (adjust breakpoint if needed)
+        const isMobile = window.innerWidth < 768;
+        
+        // Different offsets for mobile and desktop
+        const headerOffset = isMobile ? 150 : 60;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        // Smooth scroll to the element with offset
         window.scrollTo({
-          top: 0,
+          top: offsetPosition,
           behavior: 'smooth'
         });
       }
     };
 
-    // Small delay to ensure the page has rendered
-    const timer = setTimeout(scrollToElement, 10);
+    const timer = setTimeout(scrollToElement, 100);
     return () => clearTimeout(timer);
-  }, [pathname, hash, navigate]);
+  }, [hash]);
+
+  // Scroll to top on pathname change
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (!hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
 
   return null;
-}
+};
+
+export default ScrollToTop;

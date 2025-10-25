@@ -1,3 +1,8 @@
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
+import { services } from '../data/service';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
   Zap,
@@ -12,57 +17,98 @@ import {
   X,
   Menu,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
-import { services } from '../data/service';
+
+// Icon mapping for services
+const iconComponents: Record<string, React.ComponentType<{ className?: string }>> = {
+  'code': Code,
+  'smartphone': Smartphone,
+  'layout': LayoutDashboard,
+  'cloud': Cloud,
+  'brain': BrainCircuit,
+  'database': Database,
+};
 
 const Navbar = () => {
  const { theme, toggleTheme } = useTheme();
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
 
-  // Determine active menu
-  const isServicePage = location.pathname.startsWith('/services');
-  const currentHash = location.hash ? location.hash.substring(1) : '';
-
-  const isActive = (item: string) => {
-    if (isServicePage) {
-      return item === 'services';
-    }
-    if (item === 'home') {
-      return location.pathname === '/' && !currentHash;
-    }
-    return currentHash === item;
-  };
-
-  const handleNavClick = (item: string, targetId: string) => {
-    if (item === 'services') {
-      navigate('/services');
-      setIsMenuOpen(false);
-      return;
-    }
-
-    if (location.pathname !== '/') {
-      navigate(`/#${targetId}`);
-      setIsMenuOpen(false);
-      return;
-    }
-
-    if (item === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      window.history.pushState(null, '', '#');
+  const handleNavClick = (e: React.MouseEvent, _item: string, targetId: string) => {
+    e.preventDefault();
+    setIsMenuOpen(false);
+    
+    const target = targetId || 'home';
+    
+    // If not on home page, navigate to home with hash
+    if (window.location.pathname !== '/') {
+      navigate(`/#${target}`, { replace: true });
     } else {
-      const element = document.getElementById(targetId);
+      // On home page, update URL with hash and scroll to section
+      window.history.pushState({}, '', `#${target}`);
+      const element = document.getElementById(target);
       if (element) {
-        const offset = 80;
-        const top = element.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
-        window.history.pushState(null, '', `#${targetId}`);
+        element.scrollIntoView({ behavior: 'smooth' });
       }
     }
+    
+    // Update active section
+    setActiveSection(target);
+  };
+
+  // State for dropdown and active section
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  
+  // Toggle services dropdown
+  const toggleServicesDropdown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsServicesDropdownOpen(!isServicesDropdownOpen);
+  };
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.services-dropdown') && !target.closest('.services-dropdown-toggle')) {
+        setIsServicesDropdownOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  // Handle scroll to update active nav item
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100;
+      
+      // Get all sections
+      const sections = ['home', 'features', 'services', 'techStack', 'contact'];
+      
+      // Find the current section based on scroll position
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleServiceClick = (e: any, href: string) => {
+    e.preventDefault();
+    navigate(href);
+    setIsMenuOpen(false);
   };
 
   return (
@@ -77,45 +123,78 @@ const Navbar = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg group-hover:shadow-violet-500/50 transition-all duration-300 group-hover:scale-110">
-                  <Zap className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 flex items-center justify-center shadow-lg group-hover:shadow-orange-500/50 transition-all duration-300 group-hover:scale-110">
+                  <Zap className="w-5 h-5 text-white" fill="currentColor" />
                 </div>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-300"></div>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold gradient-text">
                 TechFlow
               </span>
             </Link>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-1">
-              {/* Services Dropdown */}
-              <div className="relative group">
-                <a
-                  href="#services"
-                  onMouseEnter={() => setIsServicesOpen(true)}
-                  className={`px-4 py-2 rounded-lg flex items-center gap-1 font-medium transition-all duration-200 ${
-                    isServicePage
-                      ? 'text-white bg-gray-800'
-                      : theme === 'dark'
-                      ? 'text-gray-300 hover:text-white hover:bg-gray-800'
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+
+              {/* Navigation Links */}
+              <div className="flex items-center space-x-1">
+                <Link
+                  to="/"
+                  onClick={(e) => handleNavClick(e, 'home', '')}
+                  className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                    activeSection === 'home'
+                      ? 'text-orange-500 dark:text-amber-400 font-semibold bg-orange-50 dark:bg-orange-900/20'
+                      : 'text-gray-700 hover:text-orange-600 dark:text-gray-300 dark:hover:text-amber-400 hover:bg-orange-50/50 dark:hover:bg-gray-800/50'
                   }`}
                 >
-                  Services
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-300 ${
-                      isServicesOpen ? 'rotate-180' : ''
+                  Home
+                </Link>
+                
+                <Link
+                  to="#features"
+                  onClick={(e) => handleNavClick(e, 'features', 'features')}
+                  className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                    activeSection === 'features'
+                      ? 'text-orange-500 dark:text-amber-400 font-semibold bg-orange-50 dark:bg-orange-900/20'
+                      : 'text-gray-700 hover:text-orange-600 dark:text-gray-300 dark:hover:text-amber-400 hover:bg-orange-50/50 dark:hover:bg-gray-800/50'
+                  }`}
+                >
+                  Features
+                </Link>
+                
+                {/* Services Dropdown */}
+                <div className="relative group" 
+                  onMouseEnter={() => setIsServicesOpen(true)}
+                  onMouseLeave={() => setIsServicesOpen(false)}>
+                  <a
+                    href="#services"
+                    className={`px-4 py-2 rounded-lg flex items-center gap-1 font-medium transition-all duration-200 ${
+                      theme === 'dark'
+                        ? 'text-gray-300 hover:text-white hover:bg-gray-800'
+                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                    } ${
+                      isServicesOpen ? (theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100') : ''
                     }`}
-                  />
-                </a>
-
-                {isServicesOpen && (
-                  <div
-                    onMouseEnter={() => setIsServicesOpen(true)}
-                    onMouseLeave={() => setIsServicesOpen(false)}
-                    className="fixed left-0 right-0 top-16 z-40 pt-2"
                   >
+                    Services
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-300 ${
+                        isServicesOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </a>
+
+                <AnimatePresence>
+                  {isServicesOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      onMouseEnter={() => setIsServicesOpen(true)}
+                      onMouseLeave={() => setIsServicesOpen(false)}
+                      className="fixed left-0 right-0 top-16 z-40 pt-2"
+                    >
                     <div className="w-full flex justify-center">
                       <div
                         className={`w-full max-w-6xl min-w-[800px] ${
@@ -136,9 +215,9 @@ const Navbar = () => {
                             <div
                               className={`p-2 rounded-lg ${
                                 theme === 'dark'
-                                  ? 'bg-gray-800 text-violet-400'
-                                  : 'bg-violet-50 text-violet-600'
-                              } group-hover/item:scale-110 transition-transform duration-200`}
+                                  ? 'bg-gray-800 text-amber-400'
+                                  : 'bg-orange-50 text-orange-600'
+                              } group-hover/item:scale-110 transition-all duration-200 group-hover/item:bg-orange-100 group-hover/item:text-orange-700`}
                             >
                               {service.icon === 'code' && <Code className="w-5 h-5" />}
                               {service.icon === 'smartphone' && <Smartphone className="w-5 h-5" />}
@@ -151,7 +230,7 @@ const Navbar = () => {
                               <p
                                 className={`font-semibold ${
                                   theme === 'dark' ? 'text-white' : 'text-gray-900'
-                                } group-hover/item:text-violet-500 transition-colors duration-200`}
+                                } group-hover/item:text-orange-500 transition-colors duration-200`}
                               >
                                 {service.title}
                               </p>
@@ -167,41 +246,35 @@ const Navbar = () => {
                         ))}
                       </div>
                     </div>
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-
-              {/* Other Nav Links */}
-              {['home', 'features', 'team', 'contact'].map((item) => {
-                const isActive =
-                  (!isServicePage &&
-                    ((item === 'home' && !currentHash) || currentHash === item)) ||
-                  (isServicePage && item === 'features');
-
-                const targetId = item === 'home' ? '' : item;
-
-                return (
-                  <a
-                    key={item}
-                    href={`#${targetId}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavClick(item, targetId);
-                    }}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                      isActive
-                        ? theme === 'dark'
-                          ? 'text-white bg-gray-800'
-                          : 'text-gray-900 bg-gray-100'
-                        : theme === 'dark'
-                        ? 'text-gray-300 hover:text-white hover:bg-gray-800'
-                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    {item.charAt(0).toUpperCase() + item.slice(1)}
-                  </a>
-                );
-              })}
+                
+                <Link
+                  to="#techStack"
+                  onClick={(e) => handleNavClick(e, 'techStack', 'techStack')}
+                  className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                    activeSection === 'techStack'
+                      ? 'text-orange-500 dark:text-amber-400 font-semibold bg-orange-50 dark:bg-orange-900/20'
+                      : 'text-gray-700 hover:text-orange-600 dark:text-gray-300 dark:hover:text-amber-400 hover:bg-orange-50/50 dark:hover:bg-gray-800/50'
+                  }`}
+                >
+                  Tech Stack
+                </Link>
+                
+                <Link
+                  to="#contact"
+                  onClick={(e) => handleNavClick(e, 'contact', 'contact')}
+                  className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+                    activeSection === 'contact'
+                      ? 'text-orange-500 dark:text-amber-400 font-semibold bg-orange-50 dark:bg-orange-900/20'
+                      : 'text-gray-700 hover:text-orange-600 dark:text-gray-300 dark:hover:text-amber-400 hover:bg-orange-50/50 dark:hover:bg-gray-800/50'
+                  }`}
+                >
+                  Contact
+                </Link>
+              </div>
             </div>
 
             {/* Right Actions */}
@@ -239,7 +312,32 @@ const Navbar = () => {
             } border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} animate-in slide-in-from-top duration-200`}
           >
             <div className="px-4 py-6 space-y-2">
-              <button
+             
+
+              {['home', 'features', 'techStack', 'contact'].map((item) => {
+                const label = item.charAt(0).toUpperCase() + item.slice(1);
+                const targetId = item === 'home' ? '' : item;
+                
+                return (
+                  <a
+                    key={item}
+                    href={`#${targetId}`}
+                    className={`block px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                      theme === 'dark'
+                        ? 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick(e, item, targetId);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {label}
+                  </a>
+                );
+              })}
+               <button
                 onClick={() => setIsServicesOpen(!isServicesOpen)}
                 className={`w-full flex justify-between items-center px-4 py-3 rounded-lg ${
                   theme === 'dark' ? 'text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:bg-gray-100'
@@ -273,22 +371,6 @@ const Navbar = () => {
                   ))}
                 </div>
               )}
-
-              {['Features', 'Team', 'Contact'].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className={`block px-4 py-3 rounded-lg ${
-                    theme === 'dark' ? 'text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:bg-gray-100'
-                  } font-medium transition-all duration-200`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavClick(item.toLowerCase(), item.toLowerCase());
-                  }}
-                >
-                  {item}
-                </a>
-              ))}
             </div>
           </div>
         )}

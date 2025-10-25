@@ -1,4 +1,4 @@
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail, Instagram, Facebook } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -7,40 +7,51 @@ export const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div className="col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-purple-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">T</span>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-green-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold gradient-text">
                 TechFlow
               </span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
               Building innovative software solutions that empower businesses to thrive in the digital age.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors duration-200"
+                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors duration-200 group"
+                aria-label="GitHub"
               >
-                <Github className="w-5 h-5" />
+                <Github className="w-5 h-5 text-gray-100 group-hover:text-[#f0f6fc]" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors duration-200"
+                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#e1306c] hover:bg-opacity-20 transition-colors duration-200 group"
+                aria-label="Instagram"
               >
-                <Twitter className="w-5 h-5" />
+                <Instagram className="w-5 h-5 text-[#e1306c] group-hover:text-[#e1306c]" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors duration-200"
+                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#0a66c2] hover:bg-opacity-20 transition-colors duration-200 group"
+                aria-label="LinkedIn"
               >
-                <Linkedin className="w-5 h-5" />
+                <Linkedin className="w-5 h-5 text-[#0a66c2] group-hover:text-[#0a66c2]" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors duration-200"
+                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#1877f2] hover:bg-opacity-20 transition-colors duration-200 group"
+                aria-label="Facebook"
               >
-                <Mail className="w-5 h-5" />
+                <Facebook className="w-5 h-5 text-[#1877f2] group-hover:text-[#1877f2]" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-orange-500 hover:bg-opacity-20 transition-colors duration-200 group"
+                aria-label="Email"
+              >
+                <Mail className="w-5 h-5 text-orange-500 group-hover:text-orange-500" />
               </a>
             </div>
           </div>
@@ -75,17 +86,17 @@ export const Footer = () => {
             <h3 className="font-semibold text-lg mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors duration-200">
+                <a href="#" className="text-gray-400 hover:text-orange-400 transition-colors duration-200">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors duration-200">
+                <a href="#" className="text-gray-400 hover:text-orange-400 transition-colors duration-200">
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors duration-200">
+                <a href="#" className="text-gray-400 hover:text-orange-400 transition-colors duration-200">
                   Cookie Policy
                 </a>
               </li>

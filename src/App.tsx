@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react
 import { useEffect } from 'react';
 import { Hero } from './components/Hero';
 import { Features } from './components/Features';
-import { Team } from './components/Team';
+import TechCategories from './components/TechCategories';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import WebDevelopment from './pages/services/WebDevelopment';
@@ -50,9 +50,9 @@ const Home = () => {
   return (
     <>
       <Hero />
-      <Features />
       <Services />
-      <Team />
+      <Features />
+      <TechCategories />
       <Contact />
     </>
   );
@@ -67,7 +67,7 @@ function NotFound() {
         <p className="text-gray-600 dark:text-gray-400 mb-8">The page you're looking for doesn't exist or has been moved.</p>
         <Link 
           to="/" 
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200"
         >
           Go back home
         </Link>
